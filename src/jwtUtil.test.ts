@@ -20,10 +20,9 @@ describe("JWT Utility Functions", () => {
     (Jwt.sign as jest.Mock).mockReturnValue(expectedToken);
 
     const token = createJwtAccessToken(user, secret);
-    console.log("file: jwtUtil.test.ts:23 -> test -> token", token);
 
     expect(Jwt.sign).toHaveBeenCalledWith(
-      { user: user, roles: user.role, organization: user.organization },
+      { user: user.user, roles: user.role, organization: user.organization },
       secret,
       { expiresIn: "1h" }
     );
@@ -37,29 +36,29 @@ describe("JWT Utility Functions", () => {
     const token = createJwtRefreshToken(user, secret);
 
     expect(Jwt.sign).toHaveBeenCalledWith(
-      { user: user, roles: user.role },
+      { user: user.user, roles: user.role },
       secret,
       { expiresIn: "30d" }
     );
     expect(token).toBe(expectedToken);
   });
 
-  //   test("validateJwt should return the decoded payload for a valid token", () => {
-  //     const validToken = createJwtAccessToken(user, secret);
-  //     console.log("file: jwtUtil.test.ts:49 -> test -> validToken", validToken);
-  //     const decodedPayload = {
-  //       user: "username",
-  //       role: "user",
-  //       organization: "org",
-  //     };
-  //     (Jwt.sign as jest.Mock).mockReturnValue(decodedPayload);
+  test("validateJwt should return the decoded payload for a valid token", () => {
+    const decodedPayload = {
+      user: "username",
+      role: "user",
+      organization: "org",
+    };
+    (Jwt.verify as jest.Mock).mockReturnValue(decodedPayload);
 
-  //     const payload = validateJwt(validToken, secret);
-  //     console.log("file: jwtUtil.test.ts:58 -> test -> payload", payload);
+    const validToken = createJwtAccessToken(decodedPayload, secret);
 
-  //     expect(Jwt.verify).toHaveBeenCalledWith(validToken, secret);
-  //     expect(payload).toEqual(decodedPayload);
-  //   });
+    const payload = validateJwt(validToken, secret);
+
+    expect(Jwt.verify).toHaveBeenCalledWith(validToken, secret);
+
+    expect(payload).toEqual(decodedPayload);
+  });
 
   test("validateJwt should throw an error for an invalid token", () => {
     const token = "invalid_token";

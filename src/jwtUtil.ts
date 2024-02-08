@@ -6,9 +6,13 @@ export type JWTPayload = {
   organization: string;
 };
 
-const createJwtAccessToken = (user: JWTPayload, secret: string): string => {
+const createJwtAccessToken = (payload: JWTPayload, secret: string): string => {
   return Jwt.sign(
-    { user: user, roles: user.role, organization: user.organization },
+    {
+      user: payload.user,
+      roles: payload.role,
+      organization: payload.organization,
+    },
     secret,
     {
       expiresIn: "1h",
@@ -16,8 +20,8 @@ const createJwtAccessToken = (user: JWTPayload, secret: string): string => {
   );
 };
 
-const createJwtRefreshToken = (user: JWTPayload, secret: string): string => {
-  return Jwt.sign({ user: user, roles: user.role }, secret, {
+const createJwtRefreshToken = (payload: JWTPayload, secret: string): string => {
+  return Jwt.sign({ user: payload.user, roles: payload.role }, secret, {
     expiresIn: "30d",
   });
 };

@@ -8,7 +8,7 @@ import {
 jest.mock("jsonwebtoken");
 
 describe("JWT Utility Functions", () => {
-  const user = { user: "username", role: "user", organization: "org" };
+  const user = { user: "username", roles: "user", organization: "org" };
   const secret = "secret";
 
   afterEach(() => {
@@ -22,7 +22,7 @@ describe("JWT Utility Functions", () => {
     const token = createJwtAccessToken(user, secret);
 
     expect(Jwt.sign).toHaveBeenCalledWith(
-      { user: user.user, roles: user.role, organization: user.organization },
+      { user: user.user, roles: user.roles, organization: user.organization },
       secret,
       { expiresIn: "1h" }
     );
@@ -36,7 +36,7 @@ describe("JWT Utility Functions", () => {
     const token = createJwtRefreshToken(user, secret);
 
     expect(Jwt.sign).toHaveBeenCalledWith(
-      { user: user.user, roles: user.role },
+      { user: user.user, roles: user.roles },
       secret,
       { expiresIn: "30d" }
     );
@@ -46,7 +46,7 @@ describe("JWT Utility Functions", () => {
   test("validateJwt should return the decoded payload for a valid token", () => {
     const decodedPayload = {
       user: "username",
-      role: "user",
+      roles: "user",
       organization: "org",
     };
     (Jwt.verify as jest.Mock).mockReturnValue(decodedPayload);

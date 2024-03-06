@@ -2,7 +2,7 @@ import Jwt from "jsonwebtoken";
 
 export type JWTPayload = {
   user: string;
-  role: string;
+  roles: string;
   organization: string;
 };
 
@@ -10,7 +10,7 @@ const createJwtAccessToken = (payload: JWTPayload, secret: string): string => {
   return Jwt.sign(
     {
       user: payload.user,
-      roles: payload.role,
+      roles: payload.roles,
       organization: payload.organization,
     },
     secret,
@@ -21,7 +21,7 @@ const createJwtAccessToken = (payload: JWTPayload, secret: string): string => {
 };
 
 const createJwtRefreshToken = (payload: JWTPayload, secret: string): string => {
-  return Jwt.sign({ user: payload.user, roles: payload.role }, secret, {
+  return Jwt.sign({ user: payload.user, roles: payload.roles }, secret, {
     expiresIn: "30d",
   });
 };
